@@ -4,7 +4,7 @@
         const script = document.createElement('script');
         script.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
         script.type = 'text/javascript';
-        script.onload = function() {
+        script.onload = function () {
             console.log("jQuery loaded.");
             initializePlayer();
         };
@@ -70,7 +70,10 @@
             async play() {
                 try {
                     const el = this._getVideoEl();
-                    if (el == null && document.getElementsByClassName("prev_title")[0].title === "章节测验") {
+                    if (el == null) {
+                        if (document.getElementsByClassName("prev_title")[0].title !== "章节测验") {
+                            throw new Error("播放失败：视频元素为空");
+                        }
                         // 没找到视频元素
                         console.log("===========跳过章节测验，2秒后继续播放==============")
                         $("#prevNextFocusNext").click()
@@ -204,14 +207,11 @@
                 el.addEventListener("pause", e => {
                     console.log("============视频已暂停=============")
                 })
-                if (this.configs.autoplay) {
-                    this.play();
-                }
             },
         }
 
         try {
-             window.app.run();
+            window.app.run();
 
             // 防止鼠标移出页面后视频自动暂停
             document.onmouseleave = e => {
