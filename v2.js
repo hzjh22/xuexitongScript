@@ -4,7 +4,7 @@
         const script = document.createElement('script');
         script.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
         script.type = 'text/javascript';
-        script.onload = function() {
+        script.onload = function () {
             console.log("jQuery loaded.");
             initializePlayer();
         };
@@ -36,7 +36,9 @@
                 this._initCellData();
                 this._videoEl = null;
                 this._getVideoEl();
+                this.play();
             },
+
             /// 选择并播放下一小节视频（需要先调用run方法初始化数据）
             nextUnit() {
                 const el = this._getTreeContainer();
@@ -68,6 +70,20 @@
             async play() {
                 try {
                     const el = this._getVideoEl();
+                    if (el == null) {
+                        if (document.getElementsByClassName("prev_title")[0].title !== "章节测验") {
+                            throw new Error("播放失败：视频元素为空");
+                        }
+                        // 没找到视频元素
+                        console.log("===========跳过章节测验，2秒后继续播放==============")
+                        $("#prevNextFocusNext").click()
+                        setTimeout(() => {
+                            this.play();
+                        }, 2000);
+                        return;
+                    }
+                    /// 挂钩子以便循环播放
+                    this._videoEventHandle();
                     /// 设置倍数，并播放
                     el.playbackRate = this.configs.playbackRate;
                     await el.play();
@@ -157,10 +173,9 @@
                 if (!this._videoEl) {
                     const frameObj = $("iframe").eq(0).contents().find("iframe.ans-insertvideo-online");
                     if (frameObj.length === 0) {
-                        throw new Error("找不到视频播放区域iframe")
+                        return null;
                     }
                     this._videoEl = frameObj.contents().eq(0).find("video#video_html5_api").get(0);
-                    this._videoEventHandle();
                 }
                 if (!this._videoEl) {
                     throw new Error("视频组件Video未加载完成")
@@ -192,14 +207,11 @@
                 el.addEventListener("pause", e => {
                     console.log("============视频已暂停=============")
                 })
-                if (this.configs.autoplay) {
-                    this.play();
-                }
             },
         }
 
         try {
-             window.app.run();
+            window.app.run();
 
             // 防止鼠标移出页面后视频自动暂停
             document.onmouseleave = e => {
