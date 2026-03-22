@@ -129,21 +129,6 @@ The play() request was interrupted by a call to pause()
 
 目前重点保留的是稳定性，不再继续叠加额外功能。
 
-## GitHub 上传说明
-
-当前目录 [xuexitongScript-master](/E:/code/xuexitongScript-master) 现在还不是 git 仓库，所以还不能直接 `commit` / `push`。
-
-如果你要我帮你上传到 GitHub 复刻项目，还需要下面二选一：
-
-1. 给我你的 GitHub 复刻仓库地址
-2. 或者把你已经 `git clone` 下来的复刻仓库目录发我
-
-拿到其中一个后，我就可以继续帮你：
-
-- 把当前文件同步进去
-- 初始化或接上远程
-- 提交 commit
-- 推送到 GitHub
 
 ## 免责声明
 
